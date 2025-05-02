@@ -21,7 +21,7 @@ def read_one(id: int, db: Session = Depends(get_db)):
     return task
 
 @router.put("/{id}")
-def update(id: int, updated: schemas.TaskCreate, db: Session = Depends(get_db)):
+def update(id: int, updated: schemas.TaskUpdate, db: Session = Depends(get_db)):
     task = crud.update_task(db, id, updated)
     if not task:
         raise HTTPException(status_code=404, detail="Task not found")
