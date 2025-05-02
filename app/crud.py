@@ -20,11 +20,11 @@ def update_task(db: Session, task_id: int, updated: schemas.TaskCreate):
         task.title = updated.title
         task.description = updated.description
         db.commit()
-    return task
+    return {"message": "Task updated successfully"} if task else {"message": "Task not found"}
 
 def delete_task(db: Session, task_id: int):
     task = get_task(db, task_id)
     if task:
         db.delete(task)
         db.commit()
-    return task
+    return {"message": "Task deleted successfully"} if task else {"message": "Task not found"}
