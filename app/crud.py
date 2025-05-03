@@ -28,3 +28,34 @@ def delete_task(db: Session, task_id: int):
         db.delete(task)
         db.commit()
     return task
+
+# operasi crud untuk user ---
+def get_users(db: Session):
+    return db.query(models.User).all()
+
+def get_user(db: Session, user_id: int):
+    return db.query(models.User).filter(models.User.id == user_id).first()
+
+def create_user(db: Session, user: schemas.UserCreate):
+    db_user = models.User(**user.dict())
+    db.add(db_user)
+    db.commit()
+    db.refresh(db_user)
+    return {"message": "User created successfully"}
+
+def update_user(db: Session, user_id: int, updated: schemas.UserUpdate):
+    user = get_user(db, user_id)
+    if user:
+        user.username = updated.username
+        user.email = updated.email
+        user.full_name = updated.full_name
+        user.password = updated.password
+        db.commit()
+    return user
+
+def delete_user(db: Session, user_id: int):
+    user = get_user(db, user_id)
+    if user:
+        db.delete(user)
+        db.commit()
+    return user
