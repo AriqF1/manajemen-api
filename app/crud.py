@@ -1,5 +1,6 @@
 from sqlalchemy.orm import Session
 from . import models, schemas
+from .auth import get_password_hash
 
 def get_tasks(db: Session):
     return db.query(models.Task).all()
@@ -37,7 +38,12 @@ def get_user(db: Session, user_id: int):
     return db.query(models.User).filter(models.User.id == user_id).first()
 
 def create_user(db: Session, user: schemas.UserCreate):
-    db_user = models.User(**user.dict())
+    db_user = models.User(
+        username=user.username,
+        email=user.email,
+        hashed_password=get_password_hash(user.password),
+        full_name=user.full_name,
+    )
     db.add(db_user)
     db.commit()
     db.refresh(db_user)
@@ -59,5 +65,3 @@ def delete_user(db: Session, user_id: int):
         db.delete(user)
         db.commit()
     return user
-    return {"message": "Task deleted successfully"} if task else {"message": "Task not found"}
-
